@@ -6,7 +6,7 @@ import (
 	"github.com/Shemistan/healths_service/configs"
 	"github.com/Shemistan/healths_service/internal/entities"
 	"github.com/Shemistan/healths_service/internal/presenters"
-	"github.com/Shemistan/healths_service/internal/usecases"
+	"github.com/Shemistan/healths_service/internal/services/health"
 )
 
 func main() {
@@ -15,9 +15,11 @@ func main() {
 	healthScheduler(config.ServiceUrls, config.Delay)
 }
 
-func healthScheduler(serviceUrls []entities.ServiceProps, delay time.Duration) {
+func healthScheduler(serviceUrls []entities.HealthProps, delay time.Duration) {
+	service := health.New()
+
 	for {
-		result := usecases.CheckServicesUsecase(serviceUrls)
+		result := service.GetHealth(serviceUrls)
 		presenters.PrintHealthTable(result)
 		time.Sleep(delay)
 	}

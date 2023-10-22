@@ -11,7 +11,7 @@ const (
 	urlHeader    = "URL"
 )
 
-func PrintHealthTable(statuses []entities.HealthService) {
+func PrintHealthTable(statuses []entities.Health) {
 	tbl := table.New(nameHeader, statusHeader)
 
 	for _, status := range statuses {

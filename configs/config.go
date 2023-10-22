@@ -8,13 +8,13 @@ import (
 
 type Config struct {
 	Delay       time.Duration
-	ServiceUrls []entities.ServiceProps
+	ServiceUrls []entities.HealthProps
 }
 
 func New() Config {
 	return Config{
 		Delay: 5 * time.Second,
-		ServiceUrls: []entities.ServiceProps{
+		ServiceUrls: []entities.HealthProps{
 			{
 				Url:  "https://google.com",
 				Name: "Google",

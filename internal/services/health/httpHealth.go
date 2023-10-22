@@ -1,4 +1,4 @@
-package services
+package health
 
 import (
 	"fmt"
@@ -14,24 +14,31 @@ const (
 	chBuffer = 5
 )
 
-func GetHealthServices(servicesProps []entities.ServiceProps) []entities.HealthService {
-	var stats []entities.HealthService
-	ch := make(chan entities.HealthService, chBuffer)
-
-	go checkServices(ch, servicesProps)
-
-	for data := range ch {
-		stats = append(stats, data)
-	}
-
-	return stats
+type HttpHealth struct {
 }
 
-func checkServices(ch chan entities.HealthService, servicesProps []entities.ServiceProps) {
-	for _, service := range servicesProps {
-		status := getServiceStatus(service.Url)
+func New() HealthService {
+	return HttpHealth{}
+}
 
-		ch <- entities.HealthService{
+func (service HttpHealth) GetHealth(healthProps []entities.HealthProps) []entities.Health {
+	var healths []entities.Health
+	ch := make(chan entities.Health, chBuffer)
+
+	go checkHealth(ch, healthProps)
+
+	for data := range ch {
+		healths = append(healths, data)
+	}
+
+	return healths
+}
+
+func checkHealth(ch chan entities.Health, healthProps []entities.HealthProps) {
+	for _, service := range healthProps {
+		status := getHealthStatus(service.Url)
+
+		ch <- entities.Health{
 			Status: status,
 			Name:   service.Name,
 			Url:    service.Url,
@@ -40,7 +47,7 @@ func checkServices(ch chan entities.HealthService, servicesProps []entities.Serv
 	close(ch)
 }
 
-func getServiceStatus(url string) string {
+func getHealthStatus(url string) string {
 	resp, err := http.Get(url)
 
 	if err != nil {

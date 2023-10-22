@@ -1,6 +1,6 @@
 package entities
 
-type ServiceProps struct {
+type HealthProps struct {
 	Url  string
 	Name string
 }
