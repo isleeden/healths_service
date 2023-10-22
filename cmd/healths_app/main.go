@@ -12,7 +12,7 @@ import (
 func main() {
 	config := configs.New()
 
-	healthScheduler(config.ServiceUrls, config.Delay)
+	healthScheduler(config.ServiceToCheck, config.Delay)
 }
 
 func healthScheduler(serviceUrls []entities.HealthProps, delay time.Duration) {

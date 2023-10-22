@@ -36,12 +36,12 @@ func (service HttpHealth) GetHealth(healthProps []entities.HealthProps) []entiti
 
 func checkHealth(ch chan entities.Health, healthProps []entities.HealthProps) {
 	for _, service := range healthProps {
-		status := getHealthStatus(service.Url)
+		status := getHealthStatus(service.Endpoint)
 
 		ch <- entities.Health{
 			Status: status,
 			Name:   service.Name,
-			Url:    service.Url,
+			Url:    service.Endpoint,
 		}
 	}
 	close(ch)

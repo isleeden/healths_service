@@ -7,21 +7,21 @@ import (
 )
 
 type Config struct {
-	Delay       time.Duration
-	ServiceUrls []entities.HealthProps
+	Delay          time.Duration
+	ServiceToCheck []entities.HealthProps
 }
 
 func New() Config {
 	return Config{
 		Delay: 5 * time.Second,
-		ServiceUrls: []entities.HealthProps{
+		ServiceToCheck: []entities.HealthProps{
 			{
-				Url:  "https://google.com",
-				Name: "Google",
+				Endpoint: "https://google.com",
+				Name:     "Google",
 			},
 			{
-				Url:  "https://payme.uz/api",
-				Name: "Payme",
+				Endpoint: "https://payme.uz/api",
+				Name:     "Payme",
 			},
 		},
 	}
