@@ -14,10 +14,9 @@ const (
 
 func GetHealthServices(servicesProps []entities.ServiceProps) []entities.HealthService {
 	var stats []entities.HealthService
-	// TODO изменить работу с каналами
-	ch := make(chan entities.HealthService, len(servicesProps))
+	ch := make(chan entities.HealthService, 5)
 
-	checkServices(ch, servicesProps)
+	go checkServices(ch, servicesProps)
 
 	for data := range ch {
 		stats = append(stats, data)
