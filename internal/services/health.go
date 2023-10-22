@@ -3,7 +3,6 @@ package services
 import (
 	"fmt"
 	"net/http"
-	"sync"
 
 	"github.com/Shemistan/healths_service/internal/entities"
 )
@@ -13,18 +12,12 @@ const (
 	badStatus  = "Not working"
 )
 
-func CheckServices(servicesProps []entities.ServiceProps) []entities.ServiceStatus {
-	var stats []entities.ServiceStatus
-	var wg sync.WaitGroup
-	ch := make(chan entities.ServiceStatus)
+func GetHealthServices(servicesProps []entities.ServiceProps) []entities.HealthService {
+	var stats []entities.HealthService
+	// TODO изменить работу с каналами
+	ch := make(chan entities.HealthService, len(servicesProps))
 
-	for _, service := range servicesProps {
-		wg.Add(1)
-		go checkService(&wg, ch, service)
-	}
-
-	wg.Wait()
-	close(ch)
+	checkServices(ch, servicesProps)
 
 	for data := range ch {
 		stats = append(stats, data)
@@ -33,19 +26,17 @@ func CheckServices(servicesProps []entities.ServiceProps) []entities.ServiceStat
 	return stats
 }
 
-func checkService(
-	wg *sync.WaitGroup,
-	ch chan<- entities.ServiceStatus,
-	service entities.ServiceProps,
-) {
-	defer wg.Done()
-	status := getServiceStatus(service.Url)
+func checkServices(ch chan entities.HealthService, servicesProps []entities.ServiceProps) {
+	for _, service := range servicesProps {
+		status := getServiceStatus(service.Url)
 
-	ch <- entities.ServiceStatus{
-		Status: status,
-		Name:   service.Name,
-		Url:    service.Url,
+		ch <- entities.HealthService{
+			Status: status,
+			Name:   service.Name,
+			Url:    service.Url,
+		}
 	}
+	close(ch)
 }
 
 func getServiceStatus(url string) string {

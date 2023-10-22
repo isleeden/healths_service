@@ -1,6 +1,6 @@
 package entities
 
-type ServiceStatus struct {
+type HealthService struct {
 	Name   string
 	Status string
 	Url    string

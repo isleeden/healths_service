@@ -20,7 +20,7 @@ func New() Config {
 				Name: "Google",
 			},
 			{
-				Url:  "https://payme.uz",
+				Url:  "https://payme.uz/api",
 				Name: "Payme",
 			},
 		},
