@@ -10,11 +10,13 @@ import (
 const (
 	goodStatus = "Working"
 	badStatus  = "Not working"
+
+	chBuffer = 5
 )
 
 func GetHealthServices(servicesProps []entities.ServiceProps) []entities.HealthService {
 	var stats []entities.HealthService
-	ch := make(chan entities.HealthService, 5)
+	ch := make(chan entities.HealthService, chBuffer)
 
 	go checkServices(ch, servicesProps)
 
