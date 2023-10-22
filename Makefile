@@ -4,3 +4,6 @@ test:
 
 lint:
 	golangci-lint run
+
+run:
+	go run ./cmd/healths_app/main.go
