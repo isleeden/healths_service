@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/Shemistan/healths_service/internal/entities"
+	"github.com/Shemistan/healths_service/internal/services/notification"
 )
 
 const (
@@ -15,17 +16,20 @@ const (
 )
 
 type HttpHealth struct {
+	notify notification.NotificationService
 }
 
-func New() HealthService {
-	return HttpHealth{}
+func New(notify notification.NotificationService) HealthService {
+	return HttpHealth{
+		notify: notify,
+	}
 }
 
-func (service HttpHealth) GetHealth(healthProps []entities.HealthProps) []entities.Health {
+func (health HttpHealth) GetHealth(healthProps []entities.HealthProps) []entities.Health {
 	var healths []entities.Health
 	ch := make(chan entities.Health, chBuffer)
 
-	go checkHealth(ch, healthProps)
+	go health.checkHealth(ch, healthProps)
 
 	for data := range ch {
 		healths = append(healths, data)
@@ -34,9 +38,9 @@ func (service HttpHealth) GetHealth(healthProps []entities.HealthProps) []entiti
 	return healths
 }
 
-func checkHealth(ch chan entities.Health, healthProps []entities.HealthProps) {
+func (health HttpHealth) checkHealth(ch chan entities.Health, healthProps []entities.HealthProps) {
 	for _, service := range healthProps {
-		status := getHealthStatus(service.Endpoint)
+		status := health.getHealthStatus(service.Endpoint)
 
 		ch <- entities.Health{
 			Status: status,
@@ -47,18 +51,19 @@ func checkHealth(ch chan entities.Health, healthProps []entities.HealthProps) {
 	close(ch)
 }
 
-func getHealthStatus(url string) string {
+func (health HttpHealth) getHealthStatus(url string) string {
 	resp, err := http.Get(url)
 
 	if err != nil {
 		fmt.Println("ERROR: ", err)
-		return defineStatusMessage(false)
+		health.notify.SendError(err.Error())
+		return health.defineStatusMessage(false)
 	}
 
-	return defineStatusMessage(resp.StatusCode == 200)
+	return health.defineStatusMessage(resp.StatusCode == 200)
 }
 
-func defineStatusMessage(isOk bool) string {
+func (health HttpHealth) defineStatusMessage(isOk bool) string {
 	var message string
 	if isOk {
 		message = goodStatus

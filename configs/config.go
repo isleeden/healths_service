@@ -20,7 +20,7 @@ func New() Config {
 				Name:     "Google",
 			},
 			{
-				Endpoint: "https://payme.uz/api",
+				Endpoint: "https://payme.u/api",
 				Name:     "Payme",
 			},
 		},

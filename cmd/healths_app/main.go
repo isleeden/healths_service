@@ -1,22 +1,38 @@
 package main
 
 import (
+	"log"
 	"time"
 
 	"github.com/Shemistan/healths_service/configs"
 	"github.com/Shemistan/healths_service/internal/entities"
 	"github.com/Shemistan/healths_service/internal/presenters"
 	"github.com/Shemistan/healths_service/internal/services/health"
+	"github.com/Shemistan/healths_service/internal/services/notification"
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	config := configs.New()
+	err := godotenv.Load(".env")
 
-	healthScheduler(config.ServiceToCheck, config.Delay)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	cfg := configs.New()
+
+	healthScheduler(
+		cfg.ServiceToCheck,
+		cfg.Delay,
+	)
 }
 
-func healthScheduler(serviceUrls []entities.HealthProps, delay time.Duration) {
-	service := health.New()
+func healthScheduler(
+	serviceUrls []entities.HealthProps,
+	delay time.Duration,
+) {
+	notify := notification.New()
+	service := health.New(notify)
 
 	for {
 		result := service.GetHealth(serviceUrls)
