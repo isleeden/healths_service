@@ -1,6 +1,7 @@
 package entities
 
-type HealthProps struct {
+type Service struct {
+	Id       int
 	Endpoint string
 	Name     string
 }

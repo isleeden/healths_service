@@ -28,7 +28,7 @@ func main() {
 }
 
 func healthScheduler(
-	serviceUrls []entities.HealthProps,
+	serviceUrls []entities.Service,
 	delay time.Duration,
 ) {
 	notify := notification.New()

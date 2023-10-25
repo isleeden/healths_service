@@ -25,7 +25,7 @@ func New(notify notification.NotificationService) HealthService {
 	}
 }
 
-func (health HttpHealth) GetHealth(healthProps []entities.HealthProps) []entities.Health {
+func (health HttpHealth) GetHealth(healthProps []entities.Service) []entities.Health {
 	var healths []entities.Health
 	ch := make(chan entities.Health, chBuffer)
 
@@ -38,7 +38,7 @@ func (health HttpHealth) GetHealth(healthProps []entities.HealthProps) []entitie
 	return healths
 }
 
-func (health HttpHealth) checkHealth(ch chan entities.Health, healthProps []entities.HealthProps) {
+func (health HttpHealth) checkHealth(ch chan entities.Health, healthProps []entities.Service) {
 	for _, service := range healthProps {
 		status := health.getHealthStatus(service.Endpoint)
 
